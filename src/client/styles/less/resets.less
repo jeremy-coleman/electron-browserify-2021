@@ -1,0 +1,32 @@
+
+input:focus,
+button:focus {
+  outline: none;
+}
+
+pre.prettyprint .lit {
+  color: @electron-bright;
+}
+
+.share-icon {
+  background-color: @electron-bright;
+  color: white;
+}
+
+pre {
+  background: #f4f5f6;
+  border-left: 0.3rem solid @electron-bright;
+
+  &.prettyprint {
+    border-left: 0.3rem solid @electron-bright !important;
+    color: #655d5d;
+
+    .tag {
+      color: @electron-bright;
+    }
+
+    .atn {
+      color: #0065ce;
+    }
+  }
+}
