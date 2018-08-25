@@ -42,6 +42,13 @@ NOTE: that because of this, the ORDER matters for how the stream is merged - fil
 
 ```
 
+#inline svgs
+```text
+if you see in the dist/client/styles.min.css file, the SVG images are inline into the css. you can easily change this in the postcss config file by changing 
+```
+
+
+
 #monorepo notes
 ```text
 -the packages/ folder is aliased to @coglite - and unlike other monorepo setups provides HMR capability on ALL packages instantly
