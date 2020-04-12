@@ -1,16 +1,22 @@
-require('dotenv').config()
+//require('dotenv').config()
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import * as url from "url";
 
 const isDev = true
 
+//@ts-ignore
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS=true
+//@ts-ignore
+app.allowRendererProcessReuse = true
+
 let mainWindow: Electron.BrowserWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     webPreferences: {
-      webSecurity: false
+      webSecurity: false,
+      nodeIntegration: true
     },
     height: 600,
     width: 800

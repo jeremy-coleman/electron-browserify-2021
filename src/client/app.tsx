@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 
 
 
-require('./styles/scrollbar.css')
+//require('./styles/scrollbar.css')
 
 //import {MineSweeper} from './minesweeper'
 
