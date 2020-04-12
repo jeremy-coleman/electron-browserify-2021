@@ -3,7 +3,6 @@ const { readFileSync } = require("fs");
 const https = require("https");
 const _ = require("lodash");
 const path = require("path");
-//const umd = require("./umd");
 const { Server } = require("./ws");
 var through = require("through2");
 
