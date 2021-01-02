@@ -3,7 +3,7 @@ var path = require("path");
 var fs = require("fs");
 var spawn = require("child_process").spawn;
 var browserify = require("browserify");
-var watchify = require("watchify");
+var {watchify} = require("./tools/watchify");
 //var tsify = require("tsify");
 var babelify = require("babelify");
 var electron = require("electron");
@@ -13,15 +13,15 @@ var livereload = require("gulp-livereload");
 var pug = require("gulp-pug");
 var postcss = require("gulp-postcss");
 var concat = require("gulp-concat");
-var sass = require("gulp-sass");
+var sass = require("gulp-dart-sass");
 var merge = require("merge-stream");
-var less = require("gulp-less");
+var less = require("./tools/gulp-plugins/gulp-less");
 var stylus = require("gulp-stylus");
 var del = require("del");
 var typescript = require("gulp-typescript").createProject("tsconfig.json");
 const { builtinModules } = require("module");
 
-var tsify = require('./tools/transforms/tsify')
+var tsxify = require('./tools/transforms/tsify')
 var sucrasify = require('./tools/transforms/sucrasify')
 
 //make sure react-hot-loader is in dev dependencies and you exclude it
@@ -73,8 +73,8 @@ const b = watchify(
 );
 
 b.exclude(excludeModules);
-//b.plugin(tsify);
-b.transform(tsify)
+
+b.transform(tsxify)
 b.transform(sucrasify)
 b.transform(
   babelify.configure({
@@ -96,7 +96,9 @@ b.transform(
   })
 );
 //b.transform(require("browserify-postcss"), POSTCSS_HOT_CONFIG);
-b.plugin(reactHMR, { host: "localhost", port: 1337 });
+//b.plugin(reactHMR, { host: "localhost", port: 1337 });
+
+b.plugin(reactHMR, { host: "localhost"});
 b.on("error", console.log);
 b.on("syntax", console.log);
 
@@ -133,7 +135,7 @@ gulp.task("pug", function() {
     .pipe(livereload());
 });
 
-gulp.task("app:postcss", async () => {
+gulp.task("app:postcss", () => {
   var stylusStream = gulp
     .src(["src/**/*.styl"])
     .pipe(concat("stylus-temp.styl"))
@@ -161,6 +163,8 @@ gulp.task("app:postcss", async () => {
     .pipe(livereload());
 });
 
+gulp.task("transpile:parallel", gulp.parallel("app:postcss", "pug", "tsc:desktop"))
+
 gulp.task("watch", async () => {
   livereload.listen();
   gulp.watch("src/**/*.pug", gulp.series("pug"));
@@ -171,9 +175,10 @@ gulp.task(
   "start",
   gulp.series(
     "clean:dist",
-    "tsc:desktop",
-    "pug",
-    "app:postcss",
+    //"tsc:desktop",
+    //"pug",
+    //"app:postcss",
+    "transpile:parallel",
     bundle,
     "watch"
   )

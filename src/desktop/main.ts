@@ -16,7 +16,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     webPreferences: {
       webSecurity: false,
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     },
     height: 600,
     width: 800
@@ -34,10 +35,10 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 
 
-  if (isDev) {
-    const {default: installExtension,REDUX_DEVTOOLS} = require("electron-devtools-installer");
-    installExtension(REDUX_DEVTOOLS);
-  }
+  // if (isDev) {
+  //   const {default: installExtension,REDUX_DEVTOOLS} = require("electron-devtools-installer");
+  //   installExtension(REDUX_DEVTOOLS);
+  // }
 
   mainWindow.on("closed", () => {
     mainWindow = null;

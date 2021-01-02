@@ -9,7 +9,7 @@ module.exports = {
              require('postcss-preset-env')({ browsers: 'last 2 Chrome versions' }),
              require('postcss-inline-svg')(),
              require('postcss-svgo')(),
-             require('postcss-font-smoothing')(),
+             //require('postcss-font-smoothing')(),
              purgecss({
                     content: [
                       'src/**/*.html',

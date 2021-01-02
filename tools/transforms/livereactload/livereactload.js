@@ -1,4 +1,5 @@
-const clc = require("cli-color");
+//const clc = require("cli-color");
+const clc = require("kolorist");
 const { readFileSync } = require("fs");
 const https = require("https");
 const _ = require("lodash");
