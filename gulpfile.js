@@ -1,10 +1,9 @@
 var gulp = require("gulp");
 var path = require("path");
 var fs = require("fs");
-var spawn = require("child_process").spawn;
+var {spawn} = require("child_process")
 var browserify = require("browserify");
-var {watchify} = require("./tools/watchify");
-//var tsify = require("tsify");
+var watchify = require("watchify");
 var babelify = require("babelify");
 var electron = require("electron");
 var reactHMR = require("./tools/transforms/livereactload");
@@ -15,19 +14,19 @@ var postcss = require("gulp-postcss");
 var concat = require("gulp-concat");
 var sass = require("gulp-dart-sass");
 var merge = require("merge-stream");
-var less = require("./tools/gulp-plugins/gulp-less");
-var stylus = require("gulp-stylus");
+var less = require("gulp-less");
+var stylus = require("gulp-native-stylus");
 var del = require("del");
-var typescript = require("gulp-typescript").createProject("tsconfig.json");
+
 const { builtinModules } = require("module");
 
-var tsxify = require('./tools/transforms/tsify')
+var tsify = require('./tools/transforms/tsify')
 var sucrasify = require('./tools/transforms/sucrasify')
 
 //make sure react-hot-loader is in dev dependencies and you exclude it
 const excludeModules = builtinModules.concat(
   Object.keys(require("./package.json").dependencies)
-);
+)
 
 const PATHS = {
   STYLES: [
@@ -40,6 +39,7 @@ const PATHS = {
   OUT_FILE: path.join("dist", "client", "app.js"),
   OUT_DIR: "dist/client/"
 };
+
 
 function getFileSize(filePath) {
   var size = fs.statSync(filePath).size;
@@ -54,8 +54,12 @@ function getFileSize(filePath) {
 gulp.task("clean:dist", () => del(["dist"]));
 
 gulp.task("tsc:desktop", () => {
+  var typescript = require("gulp-typescript").createProject("tsconfig.json", {
+    module: "esnext"
+  })
+
   return gulp
-    .src("src/desktop/main.ts")
+    .src("src/desktop/**/*.{ts,tsx,js,jsx}")
     .pipe(typescript())
     .pipe(gulp.dest("dist/desktop/"));
 });
@@ -74,7 +78,7 @@ const b = watchify(
 
 b.exclude(excludeModules);
 
-b.transform(tsxify)
+b.transform(tsify)
 b.transform(sucrasify)
 b.transform(
   babelify.configure({
@@ -87,7 +91,10 @@ b.transform(
         "module-resolver",
         {
           root: ["."],
-          alias: { "@coglite": "./packages" } //"underscore": "lodash"
+          alias: { 
+            "@coglite": "./src/packages",
+             //"underscore": "lodash"
+          }
         }
       ],
       "react-hot-loader/babel"
@@ -95,10 +102,10 @@ b.transform(
     sourceMaps: false
   })
 );
+
 //b.transform(require("browserify-postcss"), POSTCSS_HOT_CONFIG);
 //b.plugin(reactHMR, { host: "localhost", port: 1337 });
-
-b.plugin(reactHMR, { host: "localhost"});
+b.plugin(reactHMR);
 b.on("error", console.log);
 b.on("syntax", console.log);
 
@@ -135,7 +142,7 @@ gulp.task("pug", function() {
     .pipe(livereload());
 });
 
-gulp.task("app:postcss", () => {
+gulp.task("app:postcss", async () => {
   var stylusStream = gulp
     .src(["src/**/*.styl"])
     .pipe(concat("stylus-temp.styl"))
@@ -163,8 +170,6 @@ gulp.task("app:postcss", () => {
     .pipe(livereload());
 });
 
-gulp.task("transpile:parallel", gulp.parallel("app:postcss", "pug", "tsc:desktop"))
-
 gulp.task("watch", async () => {
   livereload.listen();
   gulp.watch("src/**/*.pug", gulp.series("pug"));
@@ -175,10 +180,9 @@ gulp.task(
   "start",
   gulp.series(
     "clean:dist",
-    //"tsc:desktop",
-    //"pug",
-    //"app:postcss",
-    "transpile:parallel",
+    "tsc:desktop",
+    "pug",
+    "app:postcss",
     bundle,
     "watch"
   )

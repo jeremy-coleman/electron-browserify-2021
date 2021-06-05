@@ -29,7 +29,8 @@ function leftPad(str, len, ch) {
 function LiveReactloadPlugin(b, opts = {}) {
   const {
     port = 4474,
-    host = null,
+    //host = null,
+    host = "localhost",
     babel = true,
     client = true,
     dedupe = true,
