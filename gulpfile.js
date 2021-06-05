@@ -1,7 +1,7 @@
 var gulp = require("gulp");
 var path = require("path");
 var fs = require("fs");
-var {spawn} = require("child_process")
+var { spawn } = require("child_process");
 var browserify = require("browserify");
 var watchify = require("watchify");
 var babelify = require("babelify");
@@ -20,13 +20,13 @@ var del = require("del");
 
 const { builtinModules } = require("module");
 
-var tsify = require('./tools/transforms/tsify')
-var sucrasify = require('./tools/transforms/sucrasify')
+var tsify = require("./tools/transforms/tsify");
+var sucrasify = require("./tools/transforms/sucrasify");
 
 //make sure react-hot-loader is in dev dependencies and you exclude it
 const excludeModules = builtinModules.concat(
   Object.keys(require("./package.json").dependencies)
-)
+);
 
 const PATHS = {
   STYLES: [
@@ -34,12 +34,11 @@ const PATHS = {
     "src/**/*.scss",
     "src/**/*.sass",
     "src/**/*.styl",
-    "src/**/*.less"
+    "src/**/*.less",
   ],
   OUT_FILE: path.join("dist", "client", "app.js"),
-  OUT_DIR: "dist/client/"
+  OUT_DIR: "dist/client/",
 };
-
 
 function getFileSize(filePath) {
   var size = fs.statSync(filePath).size;
@@ -55,8 +54,8 @@ gulp.task("clean:dist", () => del(["dist"]));
 
 gulp.task("tsc:desktop", () => {
   var typescript = require("gulp-typescript").createProject("tsconfig.json", {
-    module: "esnext"
-  })
+    module: "esnext",
+  });
 
   return gulp
     .src("src/desktop/**/*.{ts,tsx,js,jsx}")
@@ -72,14 +71,14 @@ const b = watchify(
     packageCache: {},
     debug: false,
     sourceMaps: false,
-    fullPaths: true
+    fullPaths: true,
   })
 );
 
 b.exclude(excludeModules);
 
-b.transform(tsify)
-b.transform(sucrasify)
+b.transform(tsify);
+b.transform(sucrasify);
 b.transform(
   babelify.configure({
     extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -91,15 +90,15 @@ b.transform(
         "module-resolver",
         {
           root: ["."],
-          alias: { 
+          alias: {
             "@coglite": "./src/packages",
-             //"underscore": "lodash"
-          }
-        }
+            //"underscore": "lodash"
+          },
+        },
       ],
-      "react-hot-loader/babel"
+      "react-hot-loader/babel",
     ],
-    sourceMaps: false
+    sourceMaps: false,
   })
 );
 
@@ -114,7 +113,7 @@ function _launch() {
   console.log(`BUNDLE SIZE: ${getFileSize(PATHS.OUT_FILE)}`);
   const child = spawn(electron, ["dist/desktop/main.js"], {
     detached: false,
-    stdio: "inherit"
+    stdio: "inherit",
   });
   child.on("close", () => {
     console.log("electron is done");
@@ -131,10 +130,10 @@ async function bundle() {
     .on("error", console.error)
     .pipe(fs.createWriteStream(PATHS.OUT_FILE))
     .on("close", launch);
-    //console.log(`wrote ${PATHS.OUT_FILE}`);
+  //console.log(`wrote ${PATHS.OUT_FILE}`);
 }
 
-gulp.task("pug", function() {
+gulp.task("pug", function () {
   return gulp
     .src("src/client/**/*.pug")
     .pipe(pug())

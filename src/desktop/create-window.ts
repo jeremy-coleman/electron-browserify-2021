@@ -23,13 +23,7 @@ function createWindow() {
   });
 
 
-  mainWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, '..', 'client', "index.html"),
-      protocol: "file:",
-      slashes: true
-    })
-  );
+  mainWindow.loadFile(path.join(__dirname, '..', 'client', "index.html"))
 
   mainWindow.webContents.openDevTools();
 
