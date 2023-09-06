@@ -34,7 +34,7 @@
     "babelify": "10.0.0",
     "browserify": "17.0.0",
     "del": "6.0.0",
-    "electron": "13.1.1",
+    "electron": "22.3.21",
     "gulp": "4.0.2",
     "gulp-cli":"2.3.0",
     "gulp-babel": "8.0.0",
