@@ -50,7 +50,7 @@
     "kolorist": "1.4.1",
     "less": "4.1.1",
     "merge-stream": "2.0.0",
-    "postcss": "8.3.0",
+    "postcss": "8.4.31",
     "postcss-advanced-variables": "3.0.1",
     "postcss-copy": "7.1.0",
     "postcss-csso": "5.0.1",
